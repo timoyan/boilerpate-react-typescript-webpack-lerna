@@ -1,0 +1,15 @@
+{
+  "name": "@webpack-practice/root",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Timo Yan <tomyan13@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "bootstrap": "npx lerna clean --yes && npx lerna bootstrap",
+    "start": "cd packages/app && npx core-scripts --build"
+  },
+  "devDependencies": {
+    "lerna": "3.13.1"
+  }
+}
