@@ -7,7 +7,10 @@
   "license": "MIT",
   "scripts": {
     "bootstrap": "npx lerna clean --yes && npx lerna bootstrap",
-    "start": "cd packages/app && npx core-scripts --build"
+    "dev":"cd packages/app && npx core-scripts --env dev",
+    "build-dev": "cd packages/app && npx core-scripts --build --env dev",
+    "build-prod": "cd packages/app && npx core-scripts --build --env prod",
+    "build-script": "cd packages/core-scripts && npx tsc --outDir bin"
   },
   "devDependencies": {
     "lerna": "3.13.1"
