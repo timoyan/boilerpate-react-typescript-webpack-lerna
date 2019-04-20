@@ -1,16 +1,20 @@
 {
   "name": "@webpack-practice/root",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Timo Yan <tomyan13@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "install": "npx lerna link",
     "bootstrap": "npx lerna clean --yes && npx lerna bootstrap",
     "dev": "cd packages/app && npx core-scripts --env dev",
     "build-dev": "cd packages/app && npx core-scripts --build --env dev",
     "build-prod": "cd packages/app && npx core-scripts --build --env prod",
-    "build-script": "cd packages/core-scripts && npx tsc --outDir bin"
+    "build-script": "cd packages/core-scripts && npx tsc --outDir bin",
+    "run-prod": "cd packages/app && node server.js"
   },
   "devDependencies": {
     "lerna": "3.13.3"
