@@ -14,9 +14,10 @@
     "build-dev": "cd packages/app && npx core-scripts --build --env dev",
     "build-prod": "cd packages/app && npx core-scripts --build --env prod",
     "build-script": "cd packages/core-scripts && npx tsc --outDir bin",
-    "run-prod": "cd packages/app && set PORT=80 && node server.js"
+    "run-prod": "cd packages/app && cross-env PORT=80 node server.js"
   },
   "devDependencies": {
-    "lerna": "3.13.3"
+    "lerna": "3.13.3",
+    "cross-env": "5.2.0"
   }
 }
