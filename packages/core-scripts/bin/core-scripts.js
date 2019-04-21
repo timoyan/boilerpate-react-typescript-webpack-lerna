@@ -15,7 +15,11 @@ const isBuild = argv.build || false;
 const config = require(Path.resolve(__dirname, '../src/config/webpack.config.js'));
 const compiler = Webpack(config(env, isBuild));
 if (!isBuild) {
-    const server = new WebpackDevServer(compiler, {});
+    const server = new WebpackDevServer(compiler, {
+        stats: {
+            colors: true
+        }
+    });
     server.listen(8080);
 }
 else {
