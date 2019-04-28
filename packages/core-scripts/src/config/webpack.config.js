@@ -6,8 +6,8 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const safePostCssParser = require("postcss-safe-parser");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const CleanWebpackPlugin = require('clean-webpack-plugin'); 
-const Webpack = require('webpack');
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const Webpack = require("webpack");
 
 const shouldUseSourceMap = true;
 const publicPath = "./";
@@ -162,19 +162,7 @@ module.exports = function(env, isBuild) {
     ]
   };
 
-  if (!isBuild){
-    config["devServer"] = {
-      contentBase: path.join(paths.appPath, 'build'),
-      compress: true,
-      historyApiFallback: true,
-      hot: true,
-      overlay: {
-        warnings: true,
-        errors: true
-      },
-      watchContentBase: true,
-    };
-
+  if (!isBuild) {
     config["plugins"].push(
       new Webpack.HotModuleReplacementPlugin({
         // Options...
@@ -182,8 +170,6 @@ module.exports = function(env, isBuild) {
     );
 
     // config["entry"] = ["webpack-dev-server/client?http://localhost:8080"]
-
-    
   }
 
   if (isEnvProduction) {

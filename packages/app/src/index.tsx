@@ -8,7 +8,7 @@ import FlexBoxSampleLayout from "./components/flexbox-layout-sample";
 
 const Header = () => {
   return (
-    <ul>
+    <ul style={{}}>
       <li>
         <Link to="/flex-layout-sample">Flex Layout Sample</Link>
       </li>
@@ -19,14 +19,17 @@ const Header = () => {
 function App() {
   return (
     <Router>
-      <div>
-        <Header />
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexFlow: "column nowrap",
+          minHeight: "100%"
+        }}
+      >
+        {/* <Header /> */}
         <Switch>
-          <Route
-            exact
-            path="/flex-layout-sample"
-            component={FlexBoxSampleLayout}
-          />
+          <Route path="/flex-layout-sample" component={FlexBoxSampleLayout} />
         </Switch>
       </div>
     </Router>

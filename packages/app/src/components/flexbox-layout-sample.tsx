@@ -7,6 +7,43 @@ export default class FlexBoxSampleLayout extends React.Component<
   any
 > {
   public render() {
-    return <div>Hi</div>;
+    return (
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexFlow: "row norwap",
+          padding: "10px"
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "gray",
+            flex: "1 1 80%",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis"
+          }}
+        >
+          FirstFirstFirstFirstFirstFirstFiFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstrstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirstFirst
+        </div>
+        <div
+          style={{
+            flex: "1 1 20%",
+            backgroundColor: "yellow",
+            display: "flex",
+            minWidth: 0
+          }}
+        >
+          <div
+            style={{
+              flex: 1
+            }}
+          >
+            Right Content
+          </div>
+        </div>
+      </div>
+    );
   }
 }
