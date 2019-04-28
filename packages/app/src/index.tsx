@@ -3,9 +3,34 @@ import * as ReactDOM from "react-dom";
 
 import "normalize.css";
 
-import { Hello } from "./components/hello";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import FlexBoxSampleLayout from "./components/flexbox-layout-sample";
 
-ReactDOM.render(
-  <Hello compiler="TypeScript" framework="React" />,
-  document.getElementById("example")
-);
+const Header = () => {
+  return (
+    <ul>
+      <li>
+        <Link to="/flex-layout-sample">Flex Layout Sample</Link>
+      </li>
+    </ul>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <div>
+        <Header />
+        <Switch>
+          <Route
+            exact
+            path="/flex-layout-sample"
+            component={FlexBoxSampleLayout}
+          />
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("example"));
