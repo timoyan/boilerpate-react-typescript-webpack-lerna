@@ -14,3 +14,5 @@ ctx.onmessage = ev => {
 
   ctx.postMessage(message);
 };
+
+export default null as any;

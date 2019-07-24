@@ -100,9 +100,10 @@ module.exports = function(env, isBuild) {
 
     module: {
       rules: [
+        { test: /\.(worker\.ts)?$/, loader: "worker-loader" },
         // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
         {
-          test: /\.tsx?$/,
+          test: /\.(tsx|ts)?$/,
           include: paths.appSrc,
           loader: require.resolve("awesome-typescript-loader")
         },

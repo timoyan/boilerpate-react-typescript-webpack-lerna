@@ -5,7 +5,8 @@ import "normalize.css";
 
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import FlexBoxSampleLayout from "./components/flexbox-layout-sample";
-const MyWorker = require("worker-loader?name=dist/[name].js!./worker");
+import MyWorker from "./log.worker";
+// const MyWorker = require("worker-loader?name=dist/[name].js!./worker");
 
 const Header = () => {
   return (
