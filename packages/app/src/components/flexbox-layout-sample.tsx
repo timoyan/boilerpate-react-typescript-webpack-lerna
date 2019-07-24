@@ -19,7 +19,7 @@ export default class FlexBoxSampleLayout extends React.Component<
         <div
           style={{
             backgroundColor: "gray",
-            flex: "1 1 80%",
+            flex: "1 1 0",
             overflow: "hidden",
             whiteSpace: "nowrap",
             textOverflow: "ellipsis"
@@ -29,7 +29,7 @@ export default class FlexBoxSampleLayout extends React.Component<
         </div>
         <div
           style={{
-            flex: "1 1 20%",
+            flex: "1 1 0",
             backgroundColor: "yellow",
             display: "flex",
             minWidth: 0
