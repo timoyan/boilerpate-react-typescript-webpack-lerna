@@ -5,6 +5,7 @@ import "normalize.css";
 
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import FlexBoxSampleLayout from "./components/flexbox-layout-sample";
+const MyWorker = require("worker-loader?name=dist/[name].js!./worker");
 
 const Header = () => {
   return (
@@ -17,6 +18,14 @@ const Header = () => {
 };
 
 function App() {
+  const worker = new MyWorker();
+  worker.onmessage = (ev: MessageEvent) => {
+    console.log("received");
+    console.log(ev);
+    /// worker.terminate();
+  };
+  worker.postMessage("Hi Started");
+  worker.postMessage("Try");
   return (
     <Router>
       <div

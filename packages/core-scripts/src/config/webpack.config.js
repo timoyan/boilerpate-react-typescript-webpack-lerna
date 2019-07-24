@@ -84,7 +84,8 @@ module.exports = function(env, isBuild) {
       // We inferred the "public path" (such as / or /my-project) from homepage.
       // We use "/" in development.
       publicPath: publicPath,
-      path: path.resolve(appPath, "build")
+      path: path.resolve(appPath, "build"),
+      globalObject: "this"
     },
     // Enable sourcemaps for debugging webpack's output.
     devtool: isEnvDevelopment
