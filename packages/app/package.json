@@ -6,20 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Timo Yan <tomyan13@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@webpack-practice/core-scripts": "1.0.0",
-    "@types/react": "16.8.23",
-    "@types/react-dom": "16.8.5",
-    "@types/lodash": "4.14.136"
+    "@types/react": "16.9.9",
+    "@types/react-dom": "16.9.2"
   },
   "dependencies": {
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "16.10.2",
+    "react-dom": "16.10.2",
     "normalize.css": "8.0.1",
-    "lodash": "4.17.15",
-    "react-router-dom": "5.0.1",
-    "@types/react-router-dom": "4.3.4"
-  }
+    "react-router-dom": "5.1.2",
+    "@types/react-router-dom": "5.1.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

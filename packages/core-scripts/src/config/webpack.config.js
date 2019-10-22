@@ -1,31 +1,35 @@
 const appPath = process.cwd();
 const path = require("path");
-const paths = require("./paths");
+const paths = require("../utilities/paths");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const safePostCssParser = require("postcss-safe-parser");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const Webpack = require("webpack");
+const GetClientEnvironment = require("../utilities/env");
+const HappyPack = require("happypack");
+const os = require("os");
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 
 const shouldUseSourceMap = true;
-const publicPath = "./";
-const shouldUseRelativeAssetPaths = publicPath === "./";
+const publicPath = "/";
 
-module.exports = function(env, isBuild) {
-  let isEnvDevelopment = env === "dev";
+module.exports = function(env, isBuild, host, port, analyzer) {
+  const isEnvDevelopment = env === "dev";
   const isEnvProduction = env === "prod";
+  process.env.NODE_ENV = isEnvProduction ? "production" : "development";
+  const clientEnv = GetClientEnvironment(publicPath);
 
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
       isEnvDevelopment && require.resolve("style-loader"),
-      isEnvProduction && {
-        loader: MiniCssExtractPlugin.loader,
-        options: Object.assign(
-          {},
-          shouldUseRelativeAssetPaths ? { publicPath: "../../" } : undefined
-        )
+      isBuild && {
+        loader: MiniCssExtractPlugin.loader
       },
       {
         loader: require.resolve("css-loader"),
@@ -74,17 +78,18 @@ module.exports = function(env, isBuild) {
     output: {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
+      filename: isBuild
         ? "static/js/[name].[contenthash:8].js"
         : isEnvDevelopment && "static/js/bundle.js",
       // There are also additional JS chunk files if you use code splitting.
-      chunkFilename: isEnvProduction
+      chunkFilename: isBuild
         ? "static/js/[name].[contenthash:8].chunk.js"
         : isEnvDevelopment && "static/js/[name].chunk.js",
       // We inferred the "public path" (such as / or /my-project) from homepage.
       // We use "/" in development.
       publicPath: publicPath,
-      path: path.resolve(appPath, "build")
+      path: path.resolve(appPath, "build"),
+      globalObject: typeof self !== "undefined" ? self : "this"
     },
     // Enable sourcemaps for debugging webpack's output.
     devtool: isEnvDevelopment
@@ -99,41 +104,72 @@ module.exports = function(env, isBuild) {
 
     module: {
       rules: [
-        // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
         {
-          test: /\.tsx?$/,
-          include: paths.appSrc,
-          loader: require.resolve("awesome-typescript-loader")
-        },
-        {
-          test: /\.css$/,
-          use: getStyleLoaders({
-            importLoaders: 1,
-            sourceMap: isEnvProduction && shouldUseSourceMap
-          })
-        },
-        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-        {
-          enforce: "pre",
-          test: /\.js$/,
-          loader: require.resolve("source-map-loader")
-        },
-        {
-          loader: require.resolve("file-loader"),
-          // Exclude `js` files to keep "css" loader working as it injects
-          // its runtime that would otherwise be processed through "file" loader.
-          // Also exclude `html` and `json` extensions so they get processed
-          // by webpacks internal loaders.
-          exclude: [/\.(js|mjs|jsx|ts|tsx|css)$/, /\.html$/, /\.json$/],
-          options: {
-            name: "static/media/[name].[hash:8].[ext]"
-          }
+          oneOf: [
+            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            {
+              test: /\.worker\.js$/,
+              use: { loader: "worker-loader" }
+            },
+            {
+              test: /\.js$/,
+              use: "happypack/loader"
+            },
+            {
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              loader: require.resolve("url-loader"),
+              options: {
+                limit: 10000,
+                name: "static/media/[name].[hash:8].[ext]"
+              }
+            },
+            {
+              test: /\.(ts|tsx)$/,
+              loader: require.resolve("awesome-typescript-loader")
+            },
+            {
+              test: /\.css$/,
+              use: getStyleLoaders({
+                importLoaders: 1,
+                sourceMap: isEnvProduction && shouldUseSourceMap
+              })
+            },
+            {
+              loader: require.resolve("file-loader"),
+              // Exclude `js` files to keep "css" loader working as it injects
+              // its runtime that would otherwise be processed through "file" loader.
+              // Also exclude `html` and `json` extensions so they get processed
+              // by webpacks internal loaders.
+              exclude: [/\.(mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+              options: {
+                name: "static/media/[name].[hash:8].[ext]"
+              }
+            }
+          ]
         }
       ]
     },
     plugins: [
       new CleanWebpackPlugin(),
-      // Generates an `index.html` file with the <script> injected.
+      new HappyPack({
+        loaders: ["babel-loader?cacheDirectory=true"],
+        threadPool: happyThreadPool,
+        verbose: true
+      }),
+      new Webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery"
+      }),
+      new Webpack.DefinePlugin(clientEnv.stringified),
+      new Webpack.DefinePlugin({
+        "require.specified": "require.resolve"
+      }),
+      new LodashModuleReplacementPlugin({
+        shorthands: true,
+        cloning: true,
+        caching: true,
+        collections: true
+      }),
       new HtmlWebpackPlugin(
         Object.assign(
           {},
@@ -141,7 +177,7 @@ module.exports = function(env, isBuild) {
             inject: true,
             template: paths.appHtml
           },
-          isEnvProduction
+          isBuild
             ? {
                 minify: {
                   removeComments: true,
@@ -163,26 +199,52 @@ module.exports = function(env, isBuild) {
   };
 
   if (!isBuild) {
-    config["plugins"].push(
-      new Webpack.HotModuleReplacementPlugin({
-        // Options...
-      })
+    config["entry"].unshift(
+      `webpack-dev-server/client?http://${host}:${port}/`,
+      "webpack/hot/dev-server"
     );
 
-    // config["entry"] = ["webpack-dev-server/client?http://localhost:8080"]
-  }
-
-  if (isEnvProduction) {
+    config["plugins"].push(new Webpack.HotModuleReplacementPlugin());
+  } else {
     config["plugins"].push(
       new MiniCssExtractPlugin({
-        // Options similar to the same options in webpackOptions.output
-        // both options are optional
         filename: "static/css/[name].[contenthash:8].css",
         chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
       })
     );
 
+    if (analyzer) {
+      config["plugins"].push(new BundleAnalyzerPlugin());
+    }
+  }
+
+  if (isEnvProduction) {
     config["optimization"] = {
+      // Keep the runtime chunk separated to enable long term caching
+      // https://twitter.com/wSokra/status/969679223278505985
+      runtimeChunk: true,
+      splitChunks: {
+        cacheGroups: {
+          lodash: {
+            test: /[\\/]node_modules[\\/](lodash)[\\/]/,
+            name: "lodash",
+            chunks: "all",
+            reuseExistingChunk: true
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom|react-redux|react-router|react-router-dom|redux-act|redux-observable|recompose|redux|rxjs)[\\/]/,
+            name: "react",
+            chunks: "all",
+            reuseExistingChunk: true
+          },
+          core: {
+            test: /[\\/]node_modules[\\/](@iherb-backoffice)[\\/]/,
+            name: "core",
+            chunks: "all",
+            reuseExistingChunk: true
+          }
+        }
+      },
       minimize: isEnvProduction,
       minimizer: [
         new TerserPlugin({

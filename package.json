@@ -8,8 +8,8 @@
   "author": "Timo Yan <tomyan13@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "install": "npx lerna link",
-    "bootstrap": "npx lerna clean --yes && npx lerna bootstrap",
+    "preinstall": "rm -rf node_modules",
+    "install": "npx lerna link ",
     "dev": "cd packages/app && npx core-scripts --env dev",
     "build-dev": "cd packages/app && npx core-scripts --build --env dev",
     "build-prod": "cd packages/app && npx core-scripts --build --env prod",
@@ -17,7 +17,7 @@
     "run-prod": "cd packages/app && cross-env PORT=80 node server.js"
   },
   "devDependencies": {
-    "lerna": "3.13.3",
-    "cross-env": "5.2.0"
+    "lerna": "3.18.2",
+    "cross-env": "6.0.3"
   }
 }
