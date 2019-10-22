@@ -236,12 +236,6 @@ module.exports = function(env, isBuild, host, port, analyzer) {
             name: "react",
             chunks: "all",
             reuseExistingChunk: true
-          },
-          core: {
-            test: /[\\/]node_modules[\\/](@iherb-backoffice)[\\/]/,
-            name: "core",
-            chunks: "all",
-            reuseExistingChunk: true
           }
         }
       },
