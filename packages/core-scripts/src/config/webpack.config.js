@@ -125,7 +125,7 @@ module.exports = function(env, isBuild, host, port, analyzer) {
             },
             {
               test: /\.(ts|tsx)$/,
-              loader: require.resolve("awesome-typescript-loader")
+              loader: require.resolve("ts-loader")
             },
             {
               test: /\.css$/,
