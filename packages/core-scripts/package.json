@@ -33,7 +33,7 @@
     "is-root": "2.1.0",
     "inquirer": "7.0.0",
     "pkg-up": "3.1.0",
-    "browserslist": "4.7.1",
+    "browserslist": "4.16.5",
     "lodash-webpack-plugin": "0.11.5",
     "babel-plugin-lodash": "3.3.4",
     "worker-loader": "2.0.0",
